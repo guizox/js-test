@@ -59,9 +59,17 @@ const PlayerDetailsController = {
   playerId: 8,
   showTeammatesClick: async () => {
     try {
-      const { teamId } = await PlayerService.getPlayerTeamId.getPlayerTeamId(this.playerId);
-      const { list } = await this.getPlayers(teamId);
-      console.log(list);
+
+      const playerService = new PlayerService();
+
+      const responseTeam = await playerService.getPlayerTeamId(this.playerId);
+
+      if (!responseTeam || !responseTeam.data || !responseTeam.data.teamId) {
+        throw new Error('couldnt find team id');
+      }
+
+      const { data } = await playerService.getPlayers(responseTeam.data.teamId);
+      console.log(data.list);
       // Render playerList
     } catch (e) {
       console.log(e);
